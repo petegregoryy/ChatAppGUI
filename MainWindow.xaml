@@ -7,16 +7,15 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <TextBox x:Name="EntryBox" Margin="10,0,90,10" TextWrapping="Wrap" TextChanged="TextBox_TextChanged" Height="23" VerticalAlignment="Bottom"/>
-        <Button Content="Button" Margin="0,0,10,10" Click="Button_Click" HorizontalAlignment="Right" Width="75" Height="23" VerticalAlignment="Bottom" IsDefault="True"/>
-        <Button x:Name="QuitButton" Content="Quit" Margin="0,10,10,0" VerticalAlignment="Top" Click="QuitButton_Click" HorizontalAlignment="Right" Width="75"/>
-        <ListView x:Name="messagesWindow" Margin="10,10,90,47">
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn/>
-                </GridView>
-            </ListView.View>
-        </ListView>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="131"/>
+        </Grid.ColumnDefinitions>
+        <TextBox x:Name="EntryBox" Margin="10,0,85,10" TextWrapping="Wrap" TextChanged="TextBox_TextChanged" Height="23" VerticalAlignment="Bottom"/>
+        <Button Content="Send" Margin="0,0,5,10" Click="Button_Click" HorizontalAlignment="Right" Width="75" Height="23" VerticalAlignment="Bottom" IsDefault="True"/>
+        <Button x:Name="QuitButton" Content="Quit" Margin="5,10,10,0" VerticalAlignment="Top" Click="QuitButton_Click" Grid.Column="1" Height="20"/>
+        <ListBox x:Name="messagesWindow" Margin="10,10,5,38"/>
+        <ListBox x:Name="UsersList" Grid.Column="1" HorizontalAlignment="Left" Height="346" Margin="5,35,0,0" VerticalAlignment="Top" Width="116"/>
 
     </Grid>
 </Window>

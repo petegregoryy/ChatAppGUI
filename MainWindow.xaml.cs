@@ -34,12 +34,45 @@ namespace ChatAppGUI
 
         BackgroundWorker backgroundWorkerRec = new BackgroundWorker();
 
-       
+        string _hostname = "";
+        int _port = 0;
+        string _username = "";
+
+        public void SetHost(string host, string port, string username)
+        {
+            _hostname = host;
+            _port = int.Parse(port);
+            _username = username;
+        }
 
         public MainWindow()
         {
             InitializeComponent();
             backgroundWorkerRec.WorkerSupportsCancellation = true;
+
+            
+
+            Connect();
+
+            backgroundWorkerRec.DoWork += new DoWorkEventHandler(backgroundWorkerRec_DoWork);
+            backgroundWorkerRec.RunWorkerAsync();
+            ExecuteClient("USERcsharpClient");
+        }
+
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            textEntry = EntryBox.Text;
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            string dataString = "DATA" + textEntry;
+            EntryBox.Clear();
+            ExecuteClient(dataString);
+        }
+
+        public void Connect()
+        {
             try
             {
                 // Establish the remote endpoint  
@@ -90,25 +123,7 @@ namespace ChatAppGUI
 
                 Console.WriteLine(e.ToString());
             }
-
-            backgroundWorkerRec.DoWork += new DoWorkEventHandler(backgroundWorkerRec_DoWork);
-            backgroundWorkerRec.RunWorkerAsync();
-            ExecuteClient("USERcsharpClient");
         }
-
-        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            textEntry = EntryBox.Text;
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            string dataString = "DATA" + textEntry;
-            EntryBox.Clear();
-            ExecuteClient(dataString);
-        }
-
- 
 
 
         void ExecuteClient(string entry)
@@ -152,13 +167,17 @@ namespace ChatAppGUI
         private void backgroundWorkerRec_DoWork(object sender, DoWorkEventArgs e)
         {
             BackgroundWorker worker = sender as BackgroundWorker;
+            ObservableCollection<string> userList = new ObservableCollection<string>();
 
             ObservableCollection<string> recievedMessages = new ObservableCollection<string>();
             this.Dispatcher.Invoke(() =>
             {
                 messagesWindow.ItemsSource = recievedMessages;
             });
-            
+            this.Dispatcher.Invoke(() =>
+            {
+                UsersList.ItemsSource = userList;
+            });
             while (true)
             {
                 try
@@ -179,14 +198,39 @@ namespace ChatAppGUI
                                                          0, byteRecv));
                         string message = Encoding.ASCII.GetString(messageReceived,
                                                          0, byteRecv);
-                        this.Dispatcher.Invoke(() =>
-                        {
-                            recievedMessages.Add(message);
-                            messagesWindow.ScrollIntoView(recievedMessages[recievedMessages.IndexOf(recievedMessages.Last())]);
-                            messagesWindow.InvalidateArrange();
-                            messagesWindow.UpdateLayout();
-                        });
 
+                        if (message[6] == '|')
+                        {
+                            this.Dispatcher.Invoke(() =>
+                            {
+                                userList.Clear();
+                            });
+
+                            string[] split = message.Split('|');
+                            for (int i = 1; i < split.Length; i++)
+                            {
+                                this.Dispatcher.Invoke(() =>
+                                {
+                                    userList.Add(split[i]);
+                                });
+                                
+                            }
+                            this.Dispatcher.Invoke(() =>
+                            {
+                                messagesWindow.InvalidateArrange();
+                                messagesWindow.UpdateLayout();
+                            });
+                        }
+                        else
+                        {
+                            this.Dispatcher.Invoke(() =>
+                            {
+                                recievedMessages.Add(message);
+                                messagesWindow.ScrollIntoView(recievedMessages[recievedMessages.IndexOf(recievedMessages.Last())]);
+                                messagesWindow.InvalidateArrange();
+                                messagesWindow.UpdateLayout();
+                            });
+                        }
                     }
                 }
                 // Manage of Socket's Exceptions 
@@ -222,6 +266,7 @@ namespace ChatAppGUI
         private void QuitButton_Click(object sender, RoutedEventArgs e)
         {
             Disconnect();
+            Application.Current.Shutdown();
         }
     }
 }
