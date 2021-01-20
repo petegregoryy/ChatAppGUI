@@ -5,7 +5,8 @@ using System.Text;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Threading.Tasks;
-using System.Threading;
+
+using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Net.Sockets;
@@ -31,32 +32,69 @@ namespace ChatAppGUI
         IPAddress ipAddr;
         IPEndPoint localEndPoint;
         Socket sock;
-
+        Window1 conncetDialogue = new Window1();
         BackgroundWorker backgroundWorkerRec = new BackgroundWorker();
 
+        public static MainWindow AppWindow;
+
+        bool setupComplete = false;
         string _hostname = "";
         int _port = 0;
         string _username = "";
+        bool connected = false;
+        
+
+        public MainWindow()
+        {
+            InitializeComponent();
+
+            Timer UsrlistClock = new Timer();
+            UsrlistClock.Elapsed += new ElapsedEventHandler(SendListEvent);
+            UsrlistClock.Interval = 15000;
+            UsrlistClock.Start();
+
+
+
+            AppWindow = this;
+            backgroundWorkerRec.WorkerSupportsCancellation = true;
+
+            if (!setupComplete)
+            {
+                conncetDialogue.ShowDialog();
+            }
+
+            if (setupComplete)
+            {
+                Connect();
+
+                backgroundWorkerRec.DoWork += new DoWorkEventHandler(backgroundWorkerRec_DoWork);
+                backgroundWorkerRec.RunWorkerAsync();
+                ExecuteClient("USER" + _username);
+            }
+        }
+
+        public static void SendListEvent(object source, ElapsedEventArgs e)
+        {
+            if (AppWindow.connected)
+            {
+                try
+                {
+                    AppWindow.ExecuteClient("LIST");
+                }
+                catch (NullReferenceException err)
+                {
+                    Console.WriteLine("Connection Error! -- {0}", err);
+                }
+            }
+        }
 
         public void SetHost(string host, string port, string username)
         {
             _hostname = host;
             _port = int.Parse(port);
             _username = username;
-        }
-
-        public MainWindow()
-        {
-            InitializeComponent();
-            backgroundWorkerRec.WorkerSupportsCancellation = true;
-
-            
-
-            Connect();
-
-            backgroundWorkerRec.DoWork += new DoWorkEventHandler(backgroundWorkerRec_DoWork);
-            backgroundWorkerRec.RunWorkerAsync();
-            ExecuteClient("USERcsharpClient");
+            setupComplete = true;
+            conncetDialogue.Hide();
         }
 
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -79,9 +117,9 @@ namespace ChatAppGUI
                 // for the socket. This example  
                 // uses port 11111 on the local  
                 // computer. 
-                ipHost = Dns.GetHostEntry("192.168.1.155");
+                ipHost = Dns.GetHostEntry(_hostname);
                 ipAddr = ipHost.AddressList[0];
-                localEndPoint = new IPEndPoint(ipAddr, 65432);
+                localEndPoint = new IPEndPoint(ipAddr, _port);
 
                 try
                 {
@@ -98,6 +136,7 @@ namespace ChatAppGUI
                     // that we are connected 
                     Console.WriteLine("Socket connected to -> {0} ",
                                   sock.RemoteEndPoint.ToString());
+                    connected = true;
                 }
                 // Manage of Socket's Exceptions 
                 catch (ArgumentNullException ane)
@@ -198,28 +237,33 @@ namespace ChatAppGUI
                                                          0, byteRecv));
                         string message = Encoding.ASCII.GetString(messageReceived,
                                                          0, byteRecv);
+                        string secondSubstring = message.Substring(4, 4);
 
-                        if (message[6] == '|')
+
+                        if (message.Substring(0, 3) == "250")
                         {
-                            this.Dispatcher.Invoke(() =>
-                            {
-                                userList.Clear();
-                            });
-
-                            string[] split = message.Split('|');
-                            for (int i = 1; i < split.Length; i++)
+                            if (secondSubstring == "LIST")
                             {
                                 this.Dispatcher.Invoke(() =>
                                 {
-                                    userList.Add(split[i]);
+                                    userList.Clear();
                                 });
-                                
+
+                                string[] split = message.Split('|');
+                                for (int i = 1; i < split.Length; i++)
+                                {
+                                    this.Dispatcher.Invoke(() =>
+                                    {
+                                        userList.Add(split[i]);
+                                    });
+
+                                }
+                                this.Dispatcher.Invoke(() =>
+                                {
+                                    messagesWindow.InvalidateArrange();
+                                    messagesWindow.UpdateLayout();
+                                });
                             }
-                            this.Dispatcher.Invoke(() =>
-                            {
-                                messagesWindow.InvalidateArrange();
-                                messagesWindow.UpdateLayout();
-                            });
                         }
                         else
                         {
@@ -262,11 +306,24 @@ namespace ChatAppGUI
             sock.Close();
             backgroundWorkerRec.CancelAsync();
         }
-
+        #region Closing the Program
         private void QuitButton_Click(object sender, RoutedEventArgs e)
         {
             Disconnect();
             Application.Current.Shutdown();
         }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            base.OnClosed(e);
+
+            Application.Current.Shutdown();
+        }
+        #endregion
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            ExecuteClient("LIST");
+        }
+
     }
 }
