@@ -70,6 +70,7 @@ namespace ChatAppGUI
                 backgroundWorkerRec.DoWork += new DoWorkEventHandler(backgroundWorkerRec_DoWork);
                 backgroundWorkerRec.RunWorkerAsync();
                 ExecuteClient("USER" + _username);
+                Window1.connectingWindow.CloseConnecting();
             }
         }
 

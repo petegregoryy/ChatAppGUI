@@ -23,10 +23,12 @@ namespace ChatAppGUI
         string host = "";
         string port = "";
         string username = "";
+        Connecting c = new Connecting();
+        public static Window1 connectingWindow;
         public Window1()
         {
             InitializeComponent();
-
+            connectingWindow = this;
             try
             {
                 string lastConnFile = File.ReadAllText("lastConnection.srv");
@@ -42,6 +44,11 @@ namespace ChatAppGUI
             {
 
             }
+        }
+
+        public void CloseConnecting()
+        {
+            c.Hide();
         }
 
         private void AddressBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -63,7 +70,7 @@ namespace ChatAppGUI
         {
             File.WriteAllText("lastConnection.srv", host + '|' + port + '|' + username);
             ChatAppGUI.MainWindow.AppWindow.SetHost(host, port, username);
-            
+            c.Show();
         }
     }
 }
