@@ -54,7 +54,6 @@ namespace ChatAppGUI
             UsrlistClock.Start();
 
 
-
             AppWindow = this;
             backgroundWorkerRec.WorkerSupportsCancellation = true;
 
@@ -326,5 +325,12 @@ namespace ChatAppGUI
             ExecuteClient("LIST");
         }
 
+    }
+
+    public class Message
+    {
+        public Message(string value, Image img) { message = value; image = img; }
+        public string message { get; set; }
+        public Image image { get; set; }
     }
 }

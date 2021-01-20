@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ChatAppGUI"
         mc:Ignorable="d"
-        Title="Chat App" Height="450" Width="800">
+        Title="Chat App" Height="460.37" Width="817.425" MinWidth="351.032" MinHeight="425.229">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
@@ -14,7 +14,7 @@
         <TextBox x:Name="EntryBox" Margin="10,0,85,10" TextWrapping="Wrap" TextChanged="TextBox_TextChanged" Height="23" VerticalAlignment="Bottom"/>
         <Button Content="Send" Margin="0,0,5,10" Click="Button_Click" HorizontalAlignment="Right" Width="75" Height="23" VerticalAlignment="Bottom" IsDefault="True"/>
         <Button x:Name="QuitButton" Content="Quit" Margin="5,10,10,0" VerticalAlignment="Top" Click="QuitButton_Click" Grid.Column="1" Height="20"/>
-        <ListBox x:Name="messagesWindow" Margin="10,10,5,38"/>
+        <ListBox x:Name="messagesWindow" Margin="10,10,5,38" MinWidth="350" MinHeight="60"/>
         <ListBox x:Name="UsersList" Grid.Column="1" HorizontalAlignment="Left" Height="297" Margin="5,59,0,0" VerticalAlignment="Top" Width="116"/>
         <Button Content="Refresh" Grid.Column="1" Margin="46,361,10,0" VerticalAlignment="Top" Click="Button_Click_1"/>
         <Label Content="Users" Grid.Column="1" HorizontalAlignment="Left" Margin="5,33,0,0" VerticalAlignment="Top" Width="116"/>

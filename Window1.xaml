@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ChatAppGUI"
         mc:Ignorable="d"
-        Title="Connection Detais" Height="200.708" Width="369.22" ResizeMode="NoResize">
+        Title="Connection Details" Height="200.708" Width="369.22" ResizeMode="NoResize">
     <Grid>
         <TextBox x:Name="AddressBox" Height="23" Margin="109,11,10,0" TextWrapping="Wrap" VerticalAlignment="Top" TextChanged="AddressBox_TextChanged"/>
         <Label Content="Server Address:" HorizontalAlignment="Left" Margin="10,7,0,0" VerticalAlignment="Top" Width="94"/>
