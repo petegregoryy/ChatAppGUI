@@ -5,7 +5,7 @@ using System.Text;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Threading.Tasks;
-
+using System.Media;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
@@ -266,13 +266,18 @@ namespace ChatAppGUI
                             }
                         }
                         else
-                        {
+                        {                            
                             this.Dispatcher.Invoke(() =>
                             {
                                 recievedMessages.Add(message);
                                 messagesWindow.ScrollIntoView(recievedMessages[recievedMessages.IndexOf(recievedMessages.Last())]);
                                 messagesWindow.InvalidateArrange();
                                 messagesWindow.UpdateLayout();
+                                if (WindowState == WindowState.Minimized)
+                                {
+                                    SoundPlayer player = new SoundPlayer("notif.wav");
+                                    player.Play();
+                                }
                             });
                         }
                     }

@@ -5,13 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ChatAppGUI"
         mc:Ignorable="d"
-        Title="Connection Details" Height="200.708" Width="369.22" ResizeMode="NoResize">
+        Title="Connection Details" Height="200.708" Width="369.22" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
     <Grid>
         <TextBox x:Name="AddressBox" Height="23" Margin="109,11,10,0" TextWrapping="Wrap" VerticalAlignment="Top" TextChanged="AddressBox_TextChanged"/>
         <Label Content="Server Address:" HorizontalAlignment="Left" Margin="10,7,0,0" VerticalAlignment="Top" Width="94"/>
         <Label Content="Server Port:" HorizontalAlignment="Left" Margin="10,38,0,0" VerticalAlignment="Top" Width="94"/>
         <Label Content="Username:" HorizontalAlignment="Left" Margin="10,69,0,0" VerticalAlignment="Top" Width="94"/>
-        <TextBox x:Name="PortBox" Height="23" Margin="109,42,119,0" TextWrapping="Wrap" VerticalAlignment="Top" TextChanged="PortBox_TextChanged"/>
+        <TextBox x:Name="PortBox" Height="23" Margin="109,42,119,0" TextWrapping="Wrap" VerticalAlignment="Top" TextChanged="PortBox_TextChanged" Text="65432"/>
         <TextBox x:Name="UsernameBox" HorizontalAlignment="Left" Height="23" Margin="109,73,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="242" TextChanged="Username_TextChanged"/>
         <Button Content="Connect" Margin="0,0,10,10" Height="20" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="75" Click="Button_Click" IsDefault="True"/>
 

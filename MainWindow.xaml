@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ChatAppGUI"
         mc:Ignorable="d"
-        Title="Chat App" Height="460.37" Width="817.425" MinWidth="351.032" MinHeight="425.229">
+        Title="Chat App" Height="460.37" Width="817.425" MinWidth="351.032" MinHeight="425.229" WindowStartupLocation="CenterScreen">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
